@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Melody.Console/Melody.Console.csproj" />
+  </Folder>
+</Solution>
