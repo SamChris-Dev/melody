@@ -8,17 +8,14 @@ Console.WriteLine($"Total: {DurationHelper.FormatDuration(DurationHelper.AddDura
 
 
 
-// step 2
 Console.WriteLine(DurationHelper.FormatDuration(183));
 Console.WriteLine(DurationHelper.FormatDuration(59));
 Console.WriteLine(DurationHelper.FormatDuration(600));
 Console.WriteLine(DurationHelper.FormatDuration(3725));
 
-// step 3
 Console.WriteLine(DurationHelper.FormatDuration(3,3));
 Console.WriteLine(DurationHelper.FormatDuration(10, 0));
 
-// step 4 
 Console.WriteLine(DurationHelper.AddDurations(3, 3, 4));
 
 static void PrintTrack(string title, string artist, int totalSeconds)
