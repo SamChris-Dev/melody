@@ -18,6 +18,7 @@ public static class DurationHelper
 
     }
 
+
     public static int AddDurations(int a, int b, int c)
     {
         return  a+b+c;
