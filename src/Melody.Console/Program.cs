@@ -1,27 +1,17 @@
 ﻿using Melody.Console.Helpers;
 
 
-//PrintTrack("Imagine", "John Lennon",183);
-//PrintTrack("Bohemian Rhapsody", "Queen", 355);
-//PrintTrack("Hotel California", "Eagles", 390);
-
-//int totalDuration = DurationHelper.AddDurations(183, 355, 390);
-
-//Console.WriteLine($"Total: {DurationHelper.FormatDuration(totalDuration)}");
-
-//static void PrintTrack(string title, string artist, int totalSeconds)
-//{
-//    Console.WriteLine($"{title} - {artist} ({DurationHelper.FormatDuration(totalSeconds)})");
-//}
-
 bool runningStatus = true;
-
+string lastTitle = "";
+int lastSeconds = 0;
+int trackCount = 0;
+int totalSeconds = 0;
 
 do
 {
     MenuOptions();
-
-    bool success = int.TryParse(Console.ReadLine(), out int parsedUserChoice);
+    
+    int parsedUserChoice = int.Parse(Console.ReadLine());
     Console.Clear();
 
     switch (parsedUserChoice)
@@ -46,7 +36,7 @@ do
             runningStatus = false;
             break;
         default:
-            Console.WriteLine("Unknown Option");
+            Console.WriteLine("Unknown option");
             Console.ReadKey(intercept: true);
             Console.Clear();
             break;
@@ -65,19 +55,36 @@ static void MenuOptions()
     Console.Write("Enter option: ");
 }
 
-static string AddTracks()
+void AddTracks()
 {
     Console.Write("Enter track title: ");
     string? title = Console.ReadLine();
     Console.Write("Enter track duration in seconds: ");
-    bool success = int.TryParse(Console.ReadLine(), out int parsedTrackDuration);
-    Console.WriteLine("\n");
-    Console.WriteLine($"Added: {title} - {parsedTrackDuration}");
+    int parsedTrackDuration = int.Parse(Console.ReadLine());
+    Console.WriteLine();
+    lastTitle = title?? "";
+    lastSeconds = parsedTrackDuration;
+    trackCount++;
+    totalSeconds += lastSeconds;
+    string formatedTrackDuration = DurationHelper.FormatDuration(parsedTrackDuration);
+    Console.WriteLine($"Added: {title} - {formatedTrackDuration}");
 
-    return $"{title} - {parsedTrackDuration}";
 }
 
-static void ListTracks()
+void ListTracks()
 {
-    Console.WriteLine("List");
+    string lastTrackDuration = DurationHelper.FormatDuration(lastSeconds);
+    string totalTrackDuration = DurationHelper.FormatDuration(totalSeconds);
+    
+    if (trackCount == 0)
+    {
+        Console.WriteLine("No tracks yet.");
+        Console.WriteLine();
+    }
+    else
+    {
+        Console.WriteLine($"{lastTitle} - {lastTrackDuration}");
+        Console.WriteLine($"Tracks: {trackCount}, total time: {totalTrackDuration}");
+    }
+    
 }
