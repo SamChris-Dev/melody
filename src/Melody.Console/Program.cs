@@ -2,50 +2,51 @@
 
 
 bool runningStatus = true;
-string lastTitle = "";
-int lastSeconds = 0;
-int trackCount = 0;
+List<string> titles = new List<string>();
 int totalSeconds = 0;
 
 do
 {
-    MenuOptions();
-    
-    int parsedUserChoice = int.Parse(Console.ReadLine());
+    ShowMenu();
+
+    bool userChoiceResult = int.TryParse(Console.ReadLine(), out int parsedUserChoice);
     Console.Clear();
-
-    switch (parsedUserChoice)
+    if (userChoiceResult)
     {
-        case 1:
-            Console.WriteLine("============================= Add Tracks =============================");
-            AddTracks();
-            Console.WriteLine("Press any key to go back to the main menu");
-            Console.ReadKey(intercept: true);
-            Console.Clear();
-            break;
+        switch (parsedUserChoice)
+        {
+            case 1:
+                Console.WriteLine("============================= Add Tracks =============================");
 
-        case 2:
-            Console.WriteLine("============================= List Tracks =============================");
-            ListTracks();
-            Console.WriteLine("Press any key to go back to the main menu");
-            Console.ReadKey(intercept: true);
-            Console.Clear();
-            break;
-        case 3:
-            Console.WriteLine("Program exiting.....");
-            runningStatus = false;
-            break;
-        default:
-            Console.WriteLine("Unknown option");
-            Console.ReadKey(intercept: true);
-            Console.Clear();
-            break;
+                totalSeconds += AddTrack(titles);
+                Pause();
+                break;
+
+            case 2:
+                Console.WriteLine("============================= List Tracks =============================");
+                ListTracks(titles, totalSeconds);
+                Pause();
+                break;
+            case 3:
+                Console.WriteLine("Program exiting.....");
+                runningStatus = false;
+                break;
+            default:
+                Console.WriteLine("Unknown option.");
+                Pause();
+                break;
+        }
+    }
+    else
+    {
+        Console.WriteLine("Please enter a number.");
+        Pause();
     }
 
 }
 while (runningStatus);
 
-static void MenuOptions()
+static void ShowMenu()
 {
     Console.WriteLine("============================= Menu options =============================");
     Console.WriteLine("1. Add Tracks");
@@ -55,36 +56,64 @@ static void MenuOptions()
     Console.Write("Enter option: ");
 }
 
-void AddTracks()
+static int AddTrack(List<string> titles)
 {
     Console.Write("Enter track title: ");
-    string? title = Console.ReadLine();
-    Console.Write("Enter track duration in seconds: ");
-    int parsedTrackDuration = int.Parse(Console.ReadLine());
-    Console.WriteLine();
-    lastTitle = title?? "";
-    lastSeconds = parsedTrackDuration;
-    trackCount++;
-    totalSeconds += lastSeconds;
-    string formatedTrackDuration = DurationHelper.FormatDuration(parsedTrackDuration);
-    Console.WriteLine($"Added: {title} - {formatedTrackDuration}");
+    string title = (Console.ReadLine()?? "").Trim();
+    if (string.IsNullOrWhiteSpace(title))
+    {
+        Console.WriteLine();
+        Console.WriteLine("Title can't be empty.");
 
+        return 0;
+    }
+
+
+    Console.Write("Enter track duration in seconds: ");
+    bool trackDurationResult = int.TryParse(Console.ReadLine(), out int parsedTrackDuration);
+
+    if (!trackDurationResult || parsedTrackDuration <= 0)
+    {
+        Console.WriteLine();
+        Console.WriteLine("Duration must be a positive number.");
+        return 0;
+
+    }
+    
+    
+    titles.Add(title);
+    Console.WriteLine($"Added: {title} - {DurationHelper.FormatDuration(parsedTrackDuration)}");
+    return parsedTrackDuration;
+    
 }
 
-void ListTracks()
+static void ListTracks(List<string> titles, int totalSeconds)
 {
-    string lastTrackDuration = DurationHelper.FormatDuration(lastSeconds);
+
     string totalTrackDuration = DurationHelper.FormatDuration(totalSeconds);
     
-    if (trackCount == 0)
+    if (titles.Count == 0)
     {
         Console.WriteLine("No tracks yet.");
         Console.WriteLine();
     }
     else
     {
-        Console.WriteLine($"{lastTitle} - {lastTrackDuration}");
-        Console.WriteLine($"Tracks: {trackCount}, total time: {totalTrackDuration}");
+
+        for (int i = 0; i < titles.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}. {titles[i]}");
+        }
+        Console.WriteLine();
+        Console.WriteLine($"Tracks: {titles.Count}, total time: {totalTrackDuration}");
     }
     
+}
+
+static void Pause()
+{
+    Console.WriteLine();
+    Console.WriteLine("Press any key to go back to the main menu");
+    Console.ReadKey(intercept: true);
+    Console.Clear();
 }
